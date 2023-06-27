@@ -8,16 +8,21 @@ import (
 	dbConfig "github.com/lcslima45/transactions/dbConfig"
 )
 
+// Struct that implements the Authorization Repository interface
 type authorizationRepository struct {
 	db *sql.DB
 }
 
+// Constructor of the authorization repository
 func NewAuthorizationRepository(db *sql.DB) AuthorizationRepository {
 	return &authorizationRepository{
 		db: db,
 	}
 }
 
+// Service to authorize creation
+// If one Cardholder already exists with the same Brand and Issuer of the input the
+// operation is not allowed.
 func (repo *authorizationRepository) AuthorizeCreation(transaction Transaction) (bool, error) {
 	var authorized bool
 	sqlStatement := fmt.Sprintf("SELECT * FROM %s WHERE cardholder = $1 AND brand = $2 AND issuer = $3", dbConfig.TableName)
@@ -44,6 +49,9 @@ func (repo *authorizationRepository) AuthorizeCreation(transaction Transaction) 
 
 }
 
+// Service to authorize deletion
+// If the table is Brand == 'Visa"
+// operation is not allowed.
 func (repo *authorizationRepository) AuthorizeDelete(id int) (bool, error) {
 	var authorize bool
 	var err error
@@ -67,6 +75,9 @@ func (repo *authorizationRepository) AuthorizeDelete(id int) (bool, error) {
 	return authorize, err
 }
 
+// Service to authorize deletion
+// If the table Cardholder is being altered
+// operation is not allowed.
 func (repo *authorizationRepository) AuthorizeUpdate(transaction Transaction) (bool, error) {
 	var authorized bool
 	var err error
