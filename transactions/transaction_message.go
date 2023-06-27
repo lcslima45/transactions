@@ -8,6 +8,7 @@ import (
 )
 
 const (
+	//URL of the Authorization microservice to do requests
 	authorizationURL = "http://localhost:8888/authorization"
 )
 
@@ -49,7 +50,7 @@ func authorizeCreationRequest(transaction Transaction) (bool, error) {
 	return authorized, err
 }
 
-// Do http request to the authorization microservice and returns the authorization flag
+// Do the http request to the authorization microservice and returns the authorization flag
 // to delete a transaction table in the database
 func authorizeDeleteRequest(id int) (bool, error) {
 	var authorized bool

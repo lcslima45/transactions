@@ -8,16 +8,19 @@ import (
 	_ "github.com/lib/pq"
 )
 
+// struct that implements the Repository interface
 type transactionRepository struct {
 	db *sql.DB
 }
 
+// Constructor of the Repository
 func NewTransactionRepository(db *sql.DB) Repository {
 	return &transactionRepository{
 		db: db,
 	}
 }
 
+// Routine to save a new authorized transaction
 func (repo *transactionRepository) SaveTransaction(transaction Transaction) error {
 	sqlStatement := fmt.Sprintf("INSERT INTO %s (cardholder, merchant, acquirer, brand, issuer) VALUES ($1,$2,$3,$4,$5)", dbConfig.TableName)
 	insert, err := repo.db.Prepare(sqlStatement)
@@ -25,6 +28,7 @@ func (repo *transactionRepository) SaveTransaction(transaction Transaction) erro
 		return err
 	}
 	defer insert.Close()
+	//Inserting the new transaction on the database
 	result, err := insert.Exec(transaction.Cardholder,
 		transaction.Merchant,
 		transaction.Acquirer,
@@ -42,6 +46,7 @@ func (repo *transactionRepository) SaveTransaction(transaction Transaction) erro
 	return nil
 }
 
+// Routine to do an authorized deletion
 func (repo *transactionRepository) DeleteTransaction(id int) error {
 	sqlStatement := fmt.Sprintf("Delete from %s where id=$1", dbConfig.TableName)
 	delete, err := repo.db.Prepare(sqlStatement)
@@ -61,6 +66,7 @@ func (repo *transactionRepository) DeleteTransaction(id int) error {
 	return nil
 }
 
+// Routine to do an authorized update
 func (repo *transactionRepository) UpdateTransaction(id int, transaction Transaction) error {
 	sqlStatement := fmt.Sprintf("UPDATE %s SET cardholder=$1, merchant=$2, acquirer=$3, brand=$4, issuer=$5 WHERE id=$6", dbConfig.TableName)
 	update, err := repo.db.Prepare(sqlStatement)
@@ -86,6 +92,7 @@ func (repo *transactionRepository) UpdateTransaction(id int, transaction Transac
 	return nil
 }
 
+// Routine that returns the pages of the http Request on the listing handler
 func (repo *transactionRepository) GetTransactionsPagination(limit, offset int) ([]Transaction, error) {
 	sqlStatement := fmt.Sprintf(`SELECT * FROM %s OFFSET $1 LIMIT $2`, dbConfig.TableName)
 
