@@ -8,7 +8,7 @@ const PostgresDriver = "postgres"
 const User = "postgres"
 const Host = "localhost"
 const Port = "5432"
-const Password = "senha"
+const Password = "edftgu32"
 const DbName = "Teste"
 const TableName = "transactions"
 
